@@ -22,3 +22,5 @@ bf_viewer
 *.wmv
 *.mp4
 *.avi
+
+better_flow_core/ext/tbb/

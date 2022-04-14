@@ -218,6 +218,7 @@ void EventVisualizer<MAX_SZ, SPAN>::visualize () {
     cloud->header.frame_id = "/base_link";
 
     sll t0 = this->ev_buffer[this->ev_buffer.size() - 1].timestamp;
+    // std::cout << "Feng Xiang: " << t0 << std::endl;
     int color = 0xFF80DAEB; // Color: AA:RR:GG:BB
 
     const ull target_cloud_size = 200000; // Rviz cannot render more
@@ -234,7 +235,7 @@ void EventVisualizer<MAX_SZ, SPAN>::visualize () {
         p.rgba = color;
 
         p.x = (float)(240 - e.fr_x) / 200.0;
-        p.y = (float)e.fr_y / 200.0;
+        p.y = (float)e.fr_y / 200.0; 
         p.z = double(e.timestamp - t0) / 1000000000.0;
         cloud->push_back(p);
     }
@@ -250,7 +251,14 @@ void EventVisualizer<MAX_SZ, SPAN>::visualize_minimizer () {
 
     cv::Mat image0;
     cv::transpose(EventFile::projection_img(&this->estimator->ev_buffer, 1), image0);
+    // tranpose again to be 240 x 180
+    cv::transpose(image0, image0);
     sensor_msgs::ImagePtr msg0 = cv_bridge::CvImage(std_msgs::Header(), "mono8", image0).toImageMsg();
+    sll current_time = this->ev_buffer[0].timestamp;
+    msg0->header.stamp.nsec = (int) (current_time % 1000000000); // nsecs
+    msg0->header.stamp.sec = (int) (current_time / 1000000000.0); // secs
+    std::cout << "Feng Xiang: orig timestamp - " << current_time << std::endl;
+    std::cout << "Feng Xiang: secs - " << msg0->header.stamp.sec << " | nsecs - " << msg0->header.stamp.nsec << std::endl;
     this->suppl_image_pub_0.publish(msg0);
     
     cv::Mat image1;
