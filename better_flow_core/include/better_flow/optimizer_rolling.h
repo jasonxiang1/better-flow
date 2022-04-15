@@ -83,6 +83,7 @@ public:
             fabs(this->model.rot / this->rot_divider) < 1e-4 && 
             fabs(this->model.div / this->div_divider) < 1e-1) break;
 
+            std::cout << "model.dx is: " << model.dx << std::endl;
             float old_dx  = this->model.dx;
             float old_dy  = this->model.dy;
             float old_rot = this->model.rot;
@@ -95,6 +96,7 @@ public:
                 break;
             }
 
+            // check for sign changes between old values and updated values from iteration_step()
             if (this->model.dx * old_dx < 0)   this->x_divider *= 2;
             if (this->model.dy * old_dy < 0)   this->y_divider *= 2;
             if (this->model.rot * old_rot < 0) this->rot_divider *= 2;
@@ -321,13 +323,13 @@ private:
 
         time_img = accel.get_time_img(this->events, this->metric_wsizex, 
                                       this->metric_wsizey, this->scale,
-                                      this->x_shift, this->y_shift);
+                                      this->x_shift, this->y_shift); // aggregates events into 2d matrix based on accel_lib.h functions
 
 
-        accel.fast_model(this->model, time_img);
-        this->model.update_accumulators(this->rot_divider, this->div_divider, this->x_divider, this->y_divider);
+        accel.fast_model(this->model, time_img); // update dx, dy, rot, and div based on object_model.cpp functions
+        this->model.update_accumulators(this->rot_divider, this->div_divider, this->x_divider, this->y_divider); // update total dx, dy, rot, and div over time based on object_model.h functions
 
-        double cx = (model.cx - this->x_shift) / this->scale;
+        double cx = (model.cx - this->x_shift) / this->scale;  
         double cy = (model.cy - this->y_shift) / this->scale;
 
         /*

@@ -463,11 +463,18 @@ template<class T> cv::Mat EventFile::projection_img (T *events, int scale, bool 
     int scale_img_x = RES_X * scale;
     int scale_img_y = RES_Y * scale;
 
+    // int scale_img_x = RES_Y * scale;
+    // int scale_img_y = RES_X * scale;
+
     sll lt = FROM_SEC(min_t);
     sll rt = FROM_SEC(max_t);
 
     int cnt = 0;
     cv::Mat best_project_hires_img = cv::Mat::zeros(scale_img_x, scale_img_y, CV_8UC1);
+    std::cout << "Feng Xiang: show final - " << show_final << std::endl;
+    std::cout << "Feng Xiang: scale - " << scale << std::endl;
+    std::cout << "Feng Xiang: x-scale - " << RES_X << std::endl;
+    std::cout << "Feng Xiang: y-scale - " << RES_Y << std::endl;
     for (auto &e : *events) {
         if (e.noise) continue;
 
@@ -479,12 +486,17 @@ template<class T> cv::Mat EventFile::projection_img (T *events, int scale, bool 
         //e.set_local_time(lt);
         //e.project_dn(0, 0);
 
-        int x = e.pr_x * scale;
-        int y = e.pr_y * scale;
+        // int x = e.pr_x * scale;
+        // int y = e.pr_y * scale;
+        int x = e.pr_y * scale;
+        int y = e.pr_x * scale;
 
+        // show_final
         if (show_final) {
-            x = e.fr_x * scale;
-            y = e.fr_y * scale;
+            // x = e.fr_x * scale;
+            // y = e.fr_y * scale;
+            x = e.fr_y * scale;
+            y = e.fr_x * scale;
         }
 
         if ((x >= scale * (RES_X - 1)) || (x < 0) || (y >= scale * (RES_Y - 1)) || (y < 0))
@@ -500,7 +512,7 @@ template<class T> cv::Mat EventFile::projection_img (T *events, int scale, bool 
         for (int jx = lx; jx <= rx; ++jx) {
             for (int jy = ly; jy <= ry; ++jy) {
                 if (best_project_hires_img.at<uchar>(jx, jy) < 255)
-                    best_project_hires_img.at<uchar>(jx, jy) ++;
+                    best_project_hires_img.at<uchar>(jx, jy) ++; // pixel intensities = num events over same pixel
             }
         }
     }
@@ -511,6 +523,9 @@ template<class T> cv::Mat EventFile::projection_img (T *events, int scale, bool 
 
     double img_scale = 127.0 / EventFile::nonzero_average(best_project_hires_img);
     cv::convertScaleAbs(best_project_hires_img, best_project_hires_img, img_scale, 0);
+
+    // threshold events < 50
+    
     return best_project_hires_img;
 }
 

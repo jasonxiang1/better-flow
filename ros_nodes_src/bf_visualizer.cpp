@@ -27,8 +27,8 @@
 #include <better_flow/dvs_flow.h>
 
 
-#define EVENT_WIDTH 1000000
-#define TIME_WIDTH 0.5
+#define EVENT_WIDTH 1000000 
+#define TIME_WIDTH 0.5 
 
 #define EVENT_WIDTH_PROCESS 30000
 #define TIME_WIDTH_PROCESS 0.07
@@ -173,6 +173,8 @@ bool EventVisualizer<MAX_SZ, SPAN>::add_event (Event &ev) {
     // Assuming that time only increases
     this->time_diff = this->current_slice_time - this->last_slice_time;
 
+    // std::cout << "Feng Xiang: on_time_change - " << (sll)this->on_time_change << std::endl;
+    // std::cout << "Feng Xiang: on_event_change - " << (sll)this->on_ev_change << std::endl;
     if ((this->event_diff < (sll)this->on_ev_change) &&
         (this->time_diff  < (sll)this->on_time_change)) {
         return false;
@@ -250,8 +252,8 @@ void EventVisualizer<MAX_SZ, SPAN>::visualize_minimizer () {
     this->estimator->recompute(); // Run the minimizer
 
     cv::Mat image0;
-    cv::transpose(EventFile::projection_img(&this->estimator->ev_buffer, 1), image0);
-    // tranpose again to be 240 x 180
+    cv::transpose(EventFile::projection_img(&this->estimator->ev_buffer, 1), image0); 
+    // tranpose again to be 180 x 240
     cv::transpose(image0, image0);
     sensor_msgs::ImagePtr msg0 = cv_bridge::CvImage(std_msgs::Header(), "mono8", image0).toImageMsg();
     sll current_time = this->ev_buffer[0].timestamp;
