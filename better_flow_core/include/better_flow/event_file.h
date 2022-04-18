@@ -471,10 +471,10 @@ template<class T> cv::Mat EventFile::projection_img (T *events, int scale, bool 
 
     int cnt = 0;
     cv::Mat best_project_hires_img = cv::Mat::zeros(scale_img_x, scale_img_y, CV_8UC1);
-    std::cout << "Feng Xiang: show final - " << show_final << std::endl;
-    std::cout << "Feng Xiang: scale - " << scale << std::endl;
-    std::cout << "Feng Xiang: x-scale - " << RES_X << std::endl;
-    std::cout << "Feng Xiang: y-scale - " << RES_Y << std::endl;
+    // std::cout << "Feng Xiang: show final - " << show_final << std::endl;
+    // std::cout << "Feng Xiang: scale - " << scale << std::endl;
+    // std::cout << "Feng Xiang: x-scale - " << RES_X << std::endl;
+    // std::cout << "Feng Xiang: y-scale - " << RES_Y << std::endl;
     for (auto &e : *events) {
         if (e.noise) continue;
 
@@ -521,8 +521,18 @@ template<class T> cv::Mat EventFile::projection_img (T *events, int scale, bool 
         cv::GaussianBlur(best_project_hires_img, best_project_hires_img, cv::Size(scale, scale), 0, 0);
     }
 
+
     double img_scale = 127.0 / EventFile::nonzero_average(best_project_hires_img);
     cv::convertScaleAbs(best_project_hires_img, best_project_hires_img, img_scale, 0);
+
+    for (int y=0; y<best_project_hires_img.rows; y++)
+    {
+        for (int x=0; x<best_project_hires_img.cols; x++)
+        {
+            if (best_project_hires_img.at<uchar>(y, x) < 100)
+                    best_project_hires_img.at<uchar>(y, x) = 0; // pixel intensities = num events over same pixel
+        }
+    }
 
     // threshold events < 50
     
