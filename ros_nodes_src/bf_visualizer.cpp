@@ -27,11 +27,11 @@
 #include <better_flow/dvs_flow.h>
 
 
-#define EVENT_WIDTH 1000000 
-#define TIME_WIDTH 0.5 
+#define EVENT_WIDTH 1000000 // buffer size
+#define TIME_WIDTH 0.5 // buffer size
 
-#define EVENT_WIDTH_PROCESS 30000
-#define TIME_WIDTH_PROCESS 0.07
+#define EVENT_WIDTH_PROCESS 30000 // minimizer flow size default: 30000
+#define TIME_WIDTH_PROCESS 0.07 // minimizer flow size default: 0.07
 
 
 // Node launch parameters (set in main)
@@ -45,6 +45,9 @@ std::string output_image_s1_topic;
 std::string output_image_s2_topic;
 std::string input_file;
 bool process_data;
+
+int image_raw_sec;
+int image_raw_nsec;
 
 // Main class
 template <size_t MAX_SZ, sll SPAN> class EventVisualizer {
@@ -136,7 +139,8 @@ public:
             ROS_ERROR("cv_bridge exception: %s", e.what());
             return;
         }
-
+        image_raw_sec = msg-> header.stamp.sec;
+        image_raw_nsec = msg -> header.stamp.nsec;
         this->image_pub.publish(cv_ptr->toImageMsg());
     }
 
@@ -256,9 +260,11 @@ void EventVisualizer<MAX_SZ, SPAN>::visualize_minimizer () {
     // tranpose again to be 180 x 240
     cv::transpose(image0, image0);
     sensor_msgs::ImagePtr msg0 = cv_bridge::CvImage(std_msgs::Header(), "mono8", image0).toImageMsg();
-    sll current_time = this->ev_buffer[0].timestamp;
-    msg0->header.stamp.nsec = (int) (current_time % 1000000000); // nsecs
-    msg0->header.stamp.sec = (int) (current_time / 1000000000.0); // secs
+    sll current_time = this->ev_buffer[this->ev_buffer.size() - 1].timestamp;
+    // msg0->header.stamp.nsec = (int) (current_time % 1000000000); // nsecs
+    // msg0->header.stamp.sec = (int) (current_time / 1000000000.0); // secs
+    msg0 -> header.stamp.nsec = (int) (image_raw_nsec);
+    msg0 -> header.stamp.sec = (int) (image_raw_sec);
     std::cout << "Feng Xiang: orig timestamp - " << current_time << std::endl;
     std::cout << "Feng Xiang: secs - " << msg0->header.stamp.sec << " | nsecs - " << msg0->header.stamp.nsec << std::endl;
     this->suppl_image_pub_0.publish(msg0);
