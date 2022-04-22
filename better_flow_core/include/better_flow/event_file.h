@@ -525,12 +525,13 @@ template<class T> cv::Mat EventFile::projection_img (T *events, int scale, bool 
     double img_scale = 127.0 / EventFile::nonzero_average(best_project_hires_img);
     cv::convertScaleAbs(best_project_hires_img, best_project_hires_img, img_scale, 0);
 
+    // event thresholding
     for (int y=0; y<best_project_hires_img.rows; y++)
     {
         for (int x=0; x<best_project_hires_img.cols; x++)
         {
-            if (best_project_hires_img.at<uchar>(y, x) < 125)
-                    best_project_hires_img.at<uchar>(y, x) = 0; // pixel intensities = num events over same pixel
+            if (best_project_hires_img.at<uchar>(y, x) < 225) // default: 125
+                    best_project_hires_img.at<uchar>(y, x) = 0; // pixel intensities = time surface intensity
         }
     }
 
