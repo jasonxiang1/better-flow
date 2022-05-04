@@ -30,8 +30,8 @@
 #define EVENT_WIDTH 1000000 // buffer size
 #define TIME_WIDTH 0.5 // buffer size
 
-#define EVENT_WIDTH_PROCESS 60000 // minimizer flow size default: 30000
-#define TIME_WIDTH_PROCESS 1.0 // minimizer flow size default: 0.07
+#define EVENT_WIDTH_PROCESS 5000 // minimizer flow size default: 30000
+#define TIME_WIDTH_PROCESS 0.07 // minimizer flow size default: 0.07
 
 
 // Node launch parameters (set in main)
@@ -260,8 +260,8 @@ void EventVisualizer<MAX_SZ, SPAN>::visualize_minimizer () {
     // tranpose again to be 180 x 240
     cv::transpose(image0, image0);
     sensor_msgs::ImagePtr msg0 = cv_bridge::CvImage(std_msgs::Header(), "mono8", image0).toImageMsg();
-    // sll current_time = this->ev_buffer[this->ev_buffer.size() - 1].timestamp;
-    sll current_time = this->ev_buffer[0].timestamp;
+    sll current_time = this->ev_buffer[this->ev_buffer.size() - 1].timestamp;
+    // sll current_time = this->ev_buffer[0].timestamp;
     // msg0->header.stamp.nsec = (int) (current_time % 1000000000); // nsecs
     // msg0->header.stamp.sec = (int) (current_time / 1000000000.0); // secs
     msg0 -> header.stamp.nsec = (int) (image_raw_nsec);

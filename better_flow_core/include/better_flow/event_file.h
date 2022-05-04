@@ -466,8 +466,10 @@ template<class T> cv::Mat EventFile::projection_img (T *events, int scale, bool 
     // int scale_img_x = RES_Y * scale;
     // int scale_img_y = RES_X * scale;
 
-    sll lt = FROM_SEC(min_t);
-    sll rt = FROM_SEC(max_t);
+    // sll lt = FROM_SEC(min_t);
+    sll lt = FROM_SEC((*events)[(*events).size()-1].timestamp);
+    // sll rt = FROM_SEC(max_t);
+    sll rt = FROM_SEC((*events)[0].timestamp);
 
     int cnt = 0;
     cv::Mat best_project_hires_img = cv::Mat::zeros(scale_img_x, scale_img_y, CV_8UC1);
@@ -475,8 +477,8 @@ template<class T> cv::Mat EventFile::projection_img (T *events, int scale, bool 
     // std::cout << "Feng Xiang: scale - " << scale << std::endl;
     // std::cout << "Feng Xiang: x-scale - " << RES_X << std::endl;
     // std::cout << "Feng Xiang: y-scale - " << RES_Y << std::endl;
-    std::cout << "Feng Xiang: min_t " << min_t << std::endl;
-    std::cout << "Feng Xiang: max_t " << max_t << std::endl;
+    std::cout << "Feng Xiang: min_t " << (*events)[(*events).size()-1].timestamp << std::endl;
+    std::cout << "Feng Xiang: max_t " << (*events)[0].timestamp << std::endl;
     for (auto &e : *events) {
         if (e.noise) continue;
 
