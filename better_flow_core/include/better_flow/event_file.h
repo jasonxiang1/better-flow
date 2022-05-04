@@ -530,8 +530,10 @@ template<class T> cv::Mat EventFile::projection_img (T *events, int scale, bool 
     {
         for (int x=0; x<best_project_hires_img.cols; x++)
         {
-            if (best_project_hires_img.at<uchar>(y, x) < 225) // default: 125
-                    best_project_hires_img.at<uchar>(y, x) = 0; // pixel intensities = time surface intensity
+            if (best_project_hires_img.at<uchar>(y, x) < 150) // default: 125
+                best_project_hires_img.at<uchar>(y, x) = 0; // pixel intensities = time surface intensity
+            else
+                best_project_hires_img.at<uchar>(y, x) = 255;
         }
     }
 

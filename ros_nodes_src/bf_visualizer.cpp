@@ -30,8 +30,8 @@
 #define EVENT_WIDTH 1000000 // buffer size
 #define TIME_WIDTH 0.5 // buffer size
 
-#define EVENT_WIDTH_PROCESS 30000 // minimizer flow size default: 30000
-#define TIME_WIDTH_PROCESS 0.07 // minimizer flow size default: 0.07
+#define EVENT_WIDTH_PROCESS 60000 // minimizer flow size default: 30000
+#define TIME_WIDTH_PROCESS 1.0 // minimizer flow size default: 0.07
 
 
 // Node launch parameters (set in main)
