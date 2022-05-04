@@ -260,7 +260,8 @@ void EventVisualizer<MAX_SZ, SPAN>::visualize_minimizer () {
     // tranpose again to be 180 x 240
     cv::transpose(image0, image0);
     sensor_msgs::ImagePtr msg0 = cv_bridge::CvImage(std_msgs::Header(), "mono8", image0).toImageMsg();
-    sll current_time = this->ev_buffer[this->ev_buffer.size() - 1].timestamp;
+    // sll current_time = this->ev_buffer[this->ev_buffer.size() - 1].timestamp;
+    sll current_time = this->ev_buffer[0].timestamp;
     // msg0->header.stamp.nsec = (int) (current_time % 1000000000); // nsecs
     // msg0->header.stamp.sec = (int) (current_time / 1000000000.0); // secs
     msg0 -> header.stamp.nsec = (int) (image_raw_nsec);
@@ -269,16 +270,16 @@ void EventVisualizer<MAX_SZ, SPAN>::visualize_minimizer () {
     std::cout << "Feng Xiang: secs - " << msg0->header.stamp.sec << " | nsecs - " << msg0->header.stamp.nsec << std::endl;
     this->suppl_image_pub_0.publish(msg0);
     
-    cv::Mat image1;
-    cv::transpose(EventFile::color_flow_img(&this->estimator->ev_buffer), image1);
-    sensor_msgs::ImagePtr msg1 = cv_bridge::CvImage(std_msgs::Header(), "rgb8", image1).toImageMsg();
+    // cv::Mat image1;
+    // cv::transpose(EventFile::color_flow_img(&this->estimator->ev_buffer), image1);
+    // sensor_msgs::ImagePtr msg1 = cv_bridge::CvImage(std_msgs::Header(), "rgb8", image1).toImageMsg();
     
-    cv::Mat image2;
-    cv::transpose(EventFile::projection_img_unopt(&this->estimator->ev_buffer, 1), image2);
-    sensor_msgs::ImagePtr msg2 = cv_bridge::CvImage(std_msgs::Header(), "mono8", image2).toImageMsg();
+    // cv::Mat image2;
+    // cv::transpose(EventFile::projection_img_unopt(&this->estimator->ev_buffer, 1), image2);
+    // sensor_msgs::ImagePtr msg2 = cv_bridge::CvImage(std_msgs::Header(), "mono8", image2).toImageMsg();
 
-    this->suppl_image_pub_1.publish(msg1);
-    this->suppl_image_pub_2.publish(msg2);
+    // this->suppl_image_pub_1.publish(msg1);
+    // this->suppl_image_pub_2.publish(msg2);
     
 }
 
